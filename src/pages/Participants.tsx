@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { UserIcon, PencilSquareIcon, TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  UserIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
 import axiosClient from "../api/axiosClient";
 
 interface Participant {
-  id: string;
+  userId: string;
   name: string;
-  roleName: string;
+  role: {
+    roleName: string;
+  };
   online: boolean;
   email: string;
+  department: string;
 }
 
 const Participants: React.FC = () => {
@@ -16,18 +24,25 @@ const Participants: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
+  // Only ADMIN and MANAGER can manage participants
   const canManage = ["ADMIN", "MANAGER"].includes(user?.role || "");
 
   useEffect(() => {
-    axiosClient.get("/users")
-      .then(res => setParticipants(res.data))
+    axiosClient
+      .get("/users")
+      .then((res) => setParticipants(res.data))
       .finally(() => setLoading(false));
   }, []);
 
   const handleDelete = async (id: string) => {
     if (!canManage) return alert("Unauthorized");
-    await axiosClient.delete(`/users/${id}`);
-    setParticipants(prev => prev.filter(p => p.id !== id));
+    try {
+      await axiosClient.delete(`/users/${id}`);
+      setParticipants((prev) => prev.filter((p) => p.userId !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete participant");
+    }
   };
 
   return (
@@ -50,19 +65,23 @@ const Participants: React.FC = () => {
               <tr>
                 <th className="px-6 py-3 text-left font-medium">Name</th>
                 <th className="px-6 py-3 text-left font-medium">Role</th>
+                <th className="px-6 py-3 text-left font-medium">Department</th>
                 <th className="px-6 py-3 text-left font-medium">Status</th>
                 <th className="px-6 py-3 text-left font-medium">Email</th>
-                {canManage && <th className="px-6 py-3 text-left font-medium">Actions</th>}
+                {canManage && (
+                  <th className="px-6 py-3 text-left font-medium">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {participants.map((p) => (
-                <tr key={p.id}>
+                <tr key={p.userId}>
                   <td className="px-6 py-4 flex items-center gap-2">
                     <UserIcon className="w-5 h-5 text-gray-500" />
                     {p.name}
                   </td>
-                  <td className="px-6 py-4">{p.roleName}</td>
+                  <td className="px-6 py-4">{p.role.roleName}</td>
+                  <td className="px-6 py-4">{p.department}</td>
                   <td className="px-6 py-4 flex items-center">
                     <span
                       className={`w-3 h-3 rounded-full mr-2 ${
@@ -78,7 +97,7 @@ const Participants: React.FC = () => {
                         <PencilSquareIcon className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(p.id)}
+                        onClick={() => handleDelete(p.userId)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <TrashIcon className="w-5 h-5" />
