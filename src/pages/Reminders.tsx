@@ -1,51 +1,79 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface Reminder {
-  id: string;
+  reminderId: string;
+  userId: string;
+  reminderTime: string;
+  status: string;
   message: string;
-  dateTime: string;
-  users: { email: string }[];
 }
 
 const Reminders: React.FC = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Reminder | null>(null);
 
   useEffect(() => {
     axiosClient.get("/reminders").then((res) => setReminders(res.data));
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reminders.forEach((r) => {
-        const timeDiff = new Date(r.dateTime).getTime() - Date.now();
-        if (timeDiff <= 3600000 && timeDiff > 1800000) {
-          axiosClient.post("/notifications/alert", { message: `Meeting in 1 hour: ${r.message}` });
-        } else if (timeDiff <= 1800000 && timeDiff > 0) {
-          axiosClient.post("/notifications/alert", { message: `Meeting in 30 minutes: ${r.message}` });
-        }
-      });
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, [reminders]);
+  const filtered = reminders.filter((r) =>
+    r.message.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold flex items-center gap-2">
-        <ClockIcon className="w-6 h-6 text-indigo-600" /> Reminders
+    <div className="p-6 relative">
+      <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+        <ClockIcon className="w-7 h-7 text-indigo-600" /> Reminders
       </h2>
-      <p>Asandile!! Dont' forget to implement Reminders GET ALL Endpoint</p>
 
-      <div className="mt-4 space-y-3">
-        {reminders.map((r) => (
-          <div key={r.id} className="p-4 bg-white shadow rounded-lg">
+      <input
+        type="text"
+        placeholder="Search reminders..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full p-2 border rounded-lg mb-4 focus:ring focus:ring-indigo-200"
+      />
+
+      <div className="bg-white rounded-lg shadow divide-y">
+        {filtered.length === 0 && (
+          <p className="p-4 text-gray-500">No reminders found</p>
+        )}
+        {filtered.map((r) => (
+          <div
+            key={r.reminderId}
+            onClick={() => setSelected(r)}
+            className="p-4 cursor-pointer hover:bg-indigo-50 transition"
+          >
             <p className="font-semibold">{r.message}</p>
-            <p className="text-sm text-gray-500">{new Date(r.dateTime).toLocaleString()}</p>
+            <p className="text-xs text-gray-500">
+              Time: {r.reminderTime} • {r.status}
+            </p>
           </div>
         ))}
       </div>
+
+      {selected && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-md relative">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-black"
+              onClick={() => setSelected(null)}
+            >
+              <XMarkIcon className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-bold mb-3 text-indigo-600">
+              Reminder Details
+            </h3>
+            <p><strong>Message:</strong> {selected.message}</p>
+            <p><strong>Status:</strong> {selected.status}</p>
+            <p><strong>Reminder Time:</strong> {selected.reminderTime}</p>
+            <p><strong>User ID:</strong> {selected.userId}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
