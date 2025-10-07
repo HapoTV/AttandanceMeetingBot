@@ -2,6 +2,8 @@ import {
   CalendarDaysIcon,
   BellIcon,
   ClockIcon,
+  VideoCameraIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
@@ -9,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 interface Meeting {
   meetingId: string;
-  name?: string;
+  title?: string;
   dateTime: string;
 }
 
@@ -27,6 +29,12 @@ interface Reminder {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const [stats, setStats] = useState({
+    meetings: 0,
+    recordings: 0,
+    users: 0,
+  });
 
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -47,8 +55,12 @@ const Dashboard = () => {
       axiosClient.get("/notifications"),
       axiosClient.get("/reminders"),
     ])
-      .then(([meetingsRes, notificationsRes, remindersRes]) => {
-      
+      .then(([meetingsRes, recordingsRes, usersRes, notificationsRes, remindersRes]) => {
+        setStats({
+          meetings: meetingsRes.data.length,
+          recordings: recordingsRes.data.length,
+          users: usersRes.data.length,
+        });
         setMeetings(meetingsRes.data);
         setNotifications(notificationsRes.data.slice(0, 3)); // show 3 latest
         setReminders(remindersRes.data.slice(0, 3));
@@ -103,7 +115,7 @@ const Dashboard = () => {
                   className="border rounded-lg p-3 hover:bg-blue-50 transition"
                 >
                   <p className="font-medium text-gray-800">
-                    {m.name || "Untitled Meeting"}
+                    {m.title || "Untitled Meeting"}
                   </p>
                   <p className="text-sm text-gray-500">
                     {new Date(m.dateTime).toLocaleString()}
@@ -120,7 +132,7 @@ const Dashboard = () => {
           onClick={() => navigate("/notifications")}
         >
           <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-            <BellIcon className="w-10 h-10 text-yellow-600" />
+            <BellIcon className="w-10 h-10 text-yellow-500" />
             New Notifications
           </h2>
           {notifications.length === 0 ? (
