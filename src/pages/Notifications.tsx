@@ -8,7 +8,7 @@ interface Notification {
   timestamp: string;
 }
 
-const Messages: React.FC = () => {
+const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const Messages: React.FC = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold flex items-center gap-2">
-        <BellIcon className="w-6 h-6 text-yellow-500" /> Messages
+        <BellIcon className="w-6 h-6 text-yellow-500" /> Notifications
       </h2>
       <div className="mt-4 bg-white rounded-lg shadow divide-y">
         {notifications.length === 0 && (
@@ -35,4 +35,4 @@ const Messages: React.FC = () => {
   );
 };
 
-export default Messages;
+export default Notifications;

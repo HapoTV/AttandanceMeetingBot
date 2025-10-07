@@ -20,7 +20,7 @@ import Dashboard from "./pages/Dashboard";
 import Meetings from "./pages/Meetings";
 import Recordings from "./pages/Recordings";
 import Login from "./pages/Login";
-import Messages from "./pages/Messages";
+import Notifications from "./pages/Notifications";
 import Calendar from "./pages/Calendar";
 import Agenda from "./pages/Agenda";
 import Reminders from "./pages/Reminders";
@@ -31,7 +31,7 @@ function App() {
 
   return (
     <>
-{/* ---   <AuthProvider> --- */}
+<AuthProvider>
       <Router>
         <Routes>
           {/* --- Public Marketing Website --- */}
@@ -67,7 +67,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/meetings" element={<Meetings />} />
             <Route path="/recordings" element={<Recordings />} />
-            <Route path="/messages" element={<Messages />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/reminders" element={<Reminders />} />
@@ -75,7 +75,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-{/* --- </AuthProvider> --- */}
+ </AuthProvider> 
 </>
   );
 }

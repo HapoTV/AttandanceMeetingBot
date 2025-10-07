@@ -14,7 +14,7 @@ const Sidebar = () => {
     { name: "Dashboard", path: "/dashboard", icon: HomeIcon },
     { name: "Meetings", path: "/meetings", icon: CalendarDaysIcon },
     { name: "Recordings", path: "/recordings", icon: VideoCameraIcon },
-    { name: "Messages", path: "/messages", icon: ChatBubbleLeftRightIcon },
+    { name: "Notifications", path: "/notifications", icon: ChatBubbleLeftRightIcon },
     { name: "Calendar", path: "/calendar", icon: CalendarDaysIcon },
     { name: "Agenda", path: "/agenda", icon: ClipboardDocumentListIcon },
     { name: "Reminders", path: "/reminders", icon: BellAlertIcon },
