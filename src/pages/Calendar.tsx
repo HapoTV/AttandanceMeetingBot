@@ -99,7 +99,7 @@ const MeetingsCalendar: React.FC = () => {
                 }`}
               >
                 {new Date(selectedMeeting.dateTime) < new Date()
-                  ? "Meeting Completed"
+                  ? "Previous Meeting"
                   : "Upcoming Meeting"}
               </span>
             </>

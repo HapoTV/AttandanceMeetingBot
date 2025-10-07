@@ -1,9 +1,7 @@
 import {
   CalendarDaysIcon,
   BellIcon,
-  ClockIcon,
-  VideoCameraIcon,
-  UserGroupIcon,
+  ClockIcon
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
@@ -11,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 interface Meeting {
   meetingId: string;
-  title?: string;
+  name?: string;
   dateTime: string;
 }
 
@@ -115,7 +113,7 @@ const Dashboard = () => {
                   className="border rounded-lg p-3 hover:bg-blue-50 transition"
                 >
                   <p className="font-medium text-gray-800">
-                    {m.title || "Untitled Meeting"}
+                    {m.name || "Untitled Meeting"}
                   </p>
                   <p className="text-sm text-gray-500">
                     {new Date(m.dateTime).toLocaleString()}
