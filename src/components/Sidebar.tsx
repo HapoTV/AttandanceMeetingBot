@@ -7,6 +7,7 @@ import {
   ClipboardDocumentListIcon,
   BellAlertIcon,
   UsersIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
@@ -29,7 +30,7 @@ const Sidebar = () => {
       </h1>
 
       {/* Navigation Links */}
-      <nav className="space-y-2">
+      <nav className="space-y-2 flex-1">
         {links.map(({ name, path, icon: Icon }) => (
           <NavLink
             key={path}
@@ -46,6 +47,21 @@ const Sidebar = () => {
             <span>{name}</span>
           </NavLink>
         ))}
+
+        {/* Logout */}
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `flex items-center gap-3 p-2 rounded-xl mt-4 transition ${
+              isActive
+                ? "bg-green-100 text-green-600 font-semibold"
+                : "text-green-600 hover:bg-green-50 hover:text-green-700"
+            }`
+          }
+        >
+          <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          <span>Logout</span>
+        </NavLink>
       </nav>
 
       {/* Footer / Version Info */}
