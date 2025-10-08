@@ -1,35 +1,40 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import hapoMark from "../assets/hapo-mark.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import hapoMark from "../assets/hapo-mark.svg";
 
-const Login = () => {
-  const { login } = useAuth();
+const AuthPassword = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(location.state?.email || "");
   const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
   const [error, setError] = useState("");
-  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCreatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
+    if (password !== retypePassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      const response = await axiosClient.post("/authentication/login", {
+      await axiosClient.post("/authentication/create-password", {
         email,
         password,
       });
 
-      login({ email: response.data.email, userId: response.data.authenticationId });
-      navigate("/dashboard");
+      setSuccess("Password created successfully! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err: any) {
-      if (err.response?.data?.message === "Authentication not found") {
-        // User exists but no password yet
-        setShowCreatePassword(true);
-      } else {
-        setError("Invalid credentials");
-      }
+      setError(
+        err.response?.data?.message ||
+        "You do not have permission to create a password."
+      );
     }
   };
 
@@ -50,15 +55,20 @@ const Login = () => {
             </span>
           </div>
           <p className="text-sm text-gray-500 mt-2">
-            Welcome back! Please sign in to continue.
+            Create your password to access the system.
           </p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleCreatePassword} className="space-y-4">
           {error && (
             <div className="bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm text-center">
               {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-100 text-green-600 px-3 py-2 rounded-lg text-sm text-center">
+              {success}
             </div>
           )}
 
@@ -86,33 +96,38 @@ const Login = () => {
             />
           </div>
 
+          <div>
+            <label className="text-sm font-medium text-gray-600">Retype Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition"
+              value={retypePassword}
+              onChange={(e) => setRetypePassword(e.target.value)}
+              required
+            />
+          </div>
+
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] transition-all"
           >
-            Login
+            Create Password
           </button>
         </form>
 
-        {/* Create Password Link */}
+        {/* Back to Login Link */}
           <div className="mt-4 text-center">
             <button
-              onClick={() => navigate("/create-password", { state: { email } })}
+              onClick={() => navigate("/login", { state: { email } })}
               className="text-sm text-indigo-600 font-medium hover:underline"
             >
-              Create Password
+              Back to Login
             </button>
           </div>
-        
-        {/* Footer */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} <span className="font-semibold">hapo</span> Meeting Bot
-          </p>
-        </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default AuthPassword;

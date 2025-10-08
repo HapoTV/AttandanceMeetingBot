@@ -20,6 +20,7 @@ import Dashboard from "./pages/Dashboard";
 import Meetings from "./pages/Meetings";
 import Recordings from "./pages/Recordings";
 import Login from "./pages/Login";
+import AuthPassword from "./pages/AuthPassword";
 import Notifications from "./pages/Notifications";
 import Calendar from "./pages/Calendar";
 import Agenda from "./pages/Agenda";
@@ -55,6 +56,7 @@ function App() {
 
           {/* --- Auth --- */}
           <Route path="/login" element={<Login />} />
+          <Route path="/create-password" element={<AuthPassword />} />
 
           {/* --- Protected Admin Area --- */}
           <Route
