@@ -61,9 +61,9 @@ function App() {
           {/* --- Protected Admin Area --- */}
           <Route
             element={
-              //<ProtectedRoute>
+              <ProtectedRoute>
                 <MainLayout />
-             // </ProtectedRoute>
+              </ProtectedRoute>
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
