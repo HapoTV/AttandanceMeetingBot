@@ -14,6 +14,7 @@ const Sidebar = () => {
   const links = [
     { name: "Dashboard", path: "/dashboard", icon: HomeIcon },
     { name: "Meetings", path: "/meetings", icon: CalendarDaysIcon },
+    { name: "Chats", path: "/chats", icon: ChatBubbleLeftRightIcon },
     { name: "Recordings", path: "/recordings", icon: VideoCameraIcon },
     { name: "Notifications", path: "/notifications", icon: ChatBubbleLeftRightIcon },
     { name: "Calendar", path: "/calendar", icon: CalendarDaysIcon },

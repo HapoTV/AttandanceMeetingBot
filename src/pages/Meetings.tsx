@@ -88,8 +88,12 @@ const Meetings = () => {
     const m = Math.floor((seconds % 3600) / 60)
       .toString()
       .padStart(2, "0");
-    return `${h}:${m}`;
+    const s = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${h}:${m}:${s}`;
   };
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -137,11 +141,12 @@ const Meetings = () => {
               <p className="text-sm text-gray-600">{m.description}</p>
               <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
                 <ClockIcon className="w-4 h-4" />
-                {new Date(m.dateTime).toLocaleString()} • {formatDuration(m.duration)}
+                {new Date(m.dateTime).toLocaleString()}
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end gap-2">
+              {/* Status */}
               <span
                 className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(
                   m.status
@@ -150,13 +155,17 @@ const Meetings = () => {
                 {m.status}
               </span>
 
+              {/* Duration */}
+              <span className="px-2 py-1 text-xs rounded-full text-gray-700 bg-gray-100 font-medium">
+                Duration: {formatDuration(m.duration)}
+              </span>
+
+              {/* Controls (edit/delete) */}
               {m.userId === userId && (
-                <>
+                <div className="flex items-center gap-2">
                   <select
                     value={m.status}
-                    onChange={(e) =>
-                      handleStatusChange(m.meetingId, e.target.value)
-                    }
+                    onChange={(e) => handleStatusChange(m.meetingId, e.target.value)}
                     className="border rounded px-2 py-1 text-sm"
                   >
                     <option value="SCHEDULED">SCHEDULED</option>
@@ -174,7 +183,7 @@ const Meetings = () => {
                     className="w-5 h-5 text-red-500 cursor-pointer hover:text-red-700"
                     title="Delete"
                   />
-                </>
+                </div>
               )}
             </div>
           </div>

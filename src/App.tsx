@@ -26,6 +26,7 @@ import Calendar from "./pages/Calendar";
 import Agenda from "./pages/Agenda";
 import Reminders from "./pages/Reminders";
 import Participants from "./pages/Participants";
+import Chat from "./pages/Chat";
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -74,6 +75,7 @@ function App() {
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/reminders" element={<Reminders />} />
             <Route path="/participants" element={<Participants />} />
+            <Route path="/chats" element={<Chat />} />
           </Route>
         </Routes>
       </Router>
