@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu, X, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import hapoMark from '../assets/hapo-mark.svg';
+import HapoLabsSecondary from '../assets/Hapo Labs - Secondary.jpg';
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -20,14 +20,14 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
-          <div className="flex items-center space-x-2">
-            <div className="bg-white rounded-2xl w-11 h-11 shadow-sm flex flex-col items-center justify-center overflow-hidden">
-              <img src={hapoMark} alt="Hapo logo" className="h-5 w-5 object-contain" />
-              <span className="text-[10px] leading-none font-semibold text-black mt-0.5">hapo</span>
-            </div>
-            <span className="text-3xl font-extrabold text-black font-serif">
-              Meeting Bot
-            </span>
+          <div className="flex items-center space-x-4 overflow-hidden">
+            <img
+              src={HapoLabsSecondary}
+              alt="AI Lab logo"
+              className="block h-20 md:h-24 lg:h-28 w-auto select-none"
+              style={{ clipPath: 'inset(0 0 24% 0)' }}
+              draggable={false}
+            />
           </div>
 
           {/* Desktop Navigation */}
@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
             <a href="#pricing" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">Pricing</a>
             <button
               onClick={handleSignIn}
-              className="border-2 border-purple-600 text-purple-600 px-5 py-2 rounded-full hover:bg-purple-50 transition-colors font-semibold flex items-center gap-2"
+              className="border-2 border-cyan-600 text-cyan-600 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-semibold flex items-center gap-2"
             >
               <LogIn className="w-4 h-4" />
               Sign In
@@ -64,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ mobileMenuOpen, setMobileMenuOpen }) =>
               <a href="#pricing" className="text-gray-700 hover:text-purple-600 transition-colors font-medium">Pricing</a>
               <button
                 onClick={handleSignIn}
-                className="border-2 border-purple-600 text-purple-600 px-5 py-2 rounded-full hover:bg-purple-50 transition-colors font-semibold flex items-center gap-2 w-fit"
+                className="border-2 border-cyan-600 text-cyan-600 px-5 py-2 rounded-full hover:bg-cyan-50 transition-colors font-semibold flex items-center gap-2 w-fit"
               >
                 <LogIn className="w-4 h-4" />
                 Sign In

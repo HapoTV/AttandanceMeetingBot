@@ -25,11 +25,11 @@ const Hero: React.FC = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-700 hover:to-purple-800 transition-all shadow">
+              <button className="px-6 py-2.5 rounded-full bg-cyan-600 text-white font-semibold hover:bg-cyan-700 transition-all shadow">
                 Try for Free
               </button>
-              <button className="px-6 py-2.5 rounded-full border-2 border-purple-600 text-purple-600 font-semibold hover:bg-purple-50 transition-colors flex items-center justify-center gap-2">
-                <Play className="w-5 h-5 text-purple-600" />
+              <button className="px-6 py-2.5 rounded-full border-2 border-cyan-600 text-cyan-600 font-semibold hover:bg-cyan-50 transition-colors flex items-center justify-center gap-2">
+                <Play className="w-5 h-5 text-cyan-600" />
                 Watch a Demo
               </button>
             </div>

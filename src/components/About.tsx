@@ -26,19 +26,19 @@ const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 text-white">
+    <section id="about" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
             <div>
-              <p className="text-purple-300 font-semibold text-sm tracking-wide uppercase mb-4">
+              <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mb-4">
                 ABOUT HAPO AI
               </p>
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
                 The Future of
-                <span className="block text-purple-300">Workplace Intelligence</span>
+                <span className="block">Workplace Intelligence</span>
               </h2>
-              <div className="space-y-6 text-lg leading-relaxed text-purple-100">
+              <div className="space-y-6 text-lg leading-relaxed text-gray-600">
                 <p>
                   Hapo AI revolutionizes how teams collaborate, manage time, and extract value 
                   from meetings. Our advanced AI doesn't just transcribe—it understands context, 
@@ -57,12 +57,12 @@ const About: React.FC = () => {
           <div className="space-y-6">
             {values.map((value, index) => (
               <div key={index} className="flex items-start space-x-4">
-                <div className="bg-purple-600 p-3 rounded-lg flex-shrink-0">
+                <div className="bg-cyan-600 p-3 rounded-lg flex-shrink-0 text-white">
                   {value.icon}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">{value.title}</h3>
-                  <p className="text-purple-100 leading-relaxed">{value.description}</p>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">{value.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{value.description}</p>
                 </div>
               </div>
             ))}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import hapoMark from "../assets/hapo-mark.svg";
+import HapoLabsSecondary from '../assets/Hapo Labs - Secondary.jpg';
 import axiosClient from "../api/axiosClient";
 
 const Login = () => {
@@ -30,20 +30,19 @@ const Login = () => {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-50">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-cyan-100 via-white to-cyan-50">
       <div className="bg-white/70 backdrop-blur-xl shadow-xl rounded-3xl w-full max-w-md p-8 border border-gray-200">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center space-x-3">
-            <div className="bg-white rounded-2xl w-12 h-12 shadow-md flex flex-col items-center justify-center overflow-hidden">
-              <img src={hapoMark} alt="Hapo logo" className="h-6 w-6 object-contain" />
-              <span className="text-[10px] leading-none font-semibold text-black mt-0.5">
-                hapo
-              </span>
-            </div>
-            <span className="text-3xl font-extrabold text-gray-800 font-serif tracking-tight">
-              Meeting Bot
-            </span>
+            <img
+              src={HapoLabsSecondary}
+              alt="Hapo Labs logo"
+              className="h-28 w-auto select-none"
+              style={{ clipPath: 'inset(0 0 24% 0)' }}
+              draggable={false}
+            />
+           
           </div>
           <p className="text-sm text-gray-500 mt-2">
             Welcome back! Please sign in to continue.
@@ -63,7 +62,7 @@ const Login = () => {
             <input
               type="email"
               placeholder="you@example.com"
-              className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -75,7 +74,7 @@ const Login = () => {
             <input
               type="password"
               placeholder="••••••••"
-              className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 transition"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 transition"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -84,26 +83,32 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 hover:shadow-md active:scale-[0.98] transition-all"
+            className="w-full bg-cyan-600 text-white py-2 rounded-lg font-semibold hover:bg-cyan-700 hover:shadow-md active:scale-[0.98] transition-all"
           >
             Login
           </button>
         </form>
 
         {/* Create Password Link */}
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center space-y-2">
           <button
             onClick={() => navigate("/create-password", { state: { email } })}
-            className="text-sm text-indigo-600 font-medium hover:underline"
+            className="text-sm text-cyan-600 font-medium hover:underline block w-full"
           >
             Create Password
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            className="text-sm text-cyan-600 font-medium hover:underline block w-full"
+          >
+            Home Page
           </button>
         </div>
 
         {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} <span className="font-semibold">hapo</span> Meeting Bot
+            © {new Date().getFullYear()} <span className="font-semibold">Hapo</span> Meeting Bot
           </p>
         </div>
       </div>

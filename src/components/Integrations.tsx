@@ -6,12 +6,12 @@ const Integrations: React.FC = () => {
     <section id="integrations" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-purple-600 font-semibold text-sm tracking-wide uppercase mb-4">
+          <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mb-4">
             PLATFORM INTEGRATIONS
           </p>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
             Works Where You
-            <span className="block text-purple-600">Already Collaborate</span>
+            <span className="block text-cyan-600">Already Collaborate</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Seamlessly integrate with your existing workflow on Microsoft Teams and Slack. 

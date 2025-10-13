@@ -123,10 +123,10 @@ const Features: React.FC = () => {
     return (
       <div className="space-y-4">
         {/* Prompt input */}
-        <div className="relative rounded-xl border border-purple-300 bg-white/70 backdrop-blur px-4 py-3 text-left shadow-sm">
+        <div className="relative rounded-xl border border-cyan-300 bg-white/70 backdrop-blur px-4 py-3 text-left shadow-sm">
           <div className="text-gray-800 min-h-[28px]">
             {typed}
-            <span className={`ml-px inline-block w-[2px] h-5 align-middle ${cursorOn ? 'bg-purple-600' : 'bg-transparent'}`} />
+            <span className={`ml-px inline-block w-[2px] h-5 align-middle ${cursorOn ? 'bg-cyan-600' : 'bg-transparent'}`} />
           </div>
           {/* uploaded file row */}
           {(
@@ -135,7 +135,7 @@ const Features: React.FC = () => {
             >
               <div className="flex items-center justify-between bg-slate-900/80 text-white rounded-lg px-3 py-2 border border-slate-700">
                 <div className="flex items-center gap-2">
-                  <FileUp className="w-4 h-4 text-purple-300" />
+                  <FileUp className="w-4 h-4 text-cyan-300" />
                   <span className="text-xs">Draft_Agenda_Q1.pdf</span>
                 </div>
                 <span className="text-[10px] text-white/60">uploaded</span>
@@ -146,7 +146,7 @@ const Features: React.FC = () => {
 
         {/* Reading indicator */}
         <button className={`w-full rounded-full text-white py-2 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${
-          reading ? 'bg-purple-700' : 'bg-purple-600'
+          reading ? 'bg-cyan-700' : 'bg-cyan-600'
         }`}>
           <Sparkles className="w-4 h-4" /> {reading ? 'Reading Your Inputs…' : 'Generate Agenda'}
         </button>
@@ -157,7 +157,7 @@ const Features: React.FC = () => {
             <div
               key={b}
               className={`flex items-center justify-between rounded-lg px-4 py-3 border ${
-                i < revealed ? 'bg-white shadow border-purple-200' : 'bg-purple-100/60 border-purple-200'
+                i < revealed ? 'bg-white shadow border-cyan-200' : 'bg-cyan-100/60 border-cyan-200'
               } transition-all duration-500`}
               style={{
                 transform: i < revealed ? 'translateY(0px)' : 'translateY(-8px)',
@@ -220,10 +220,10 @@ const Features: React.FC = () => {
     return (
       <div className="space-y-3">
         {/* NL request typing */}
-        <div className="rounded-lg border border-purple-200 bg-white p-3">
+        <div className="rounded-lg border border-cyan-200 bg-white p-3">
           <div className="text-sm text-gray-800">
             {typed}
-            <span className={`ml-px inline-block w-[2px] h-4 align-middle ${cursorOn ? 'bg-purple-600' : 'bg-transparent'}`} />
+            <span className={`ml-px inline-block w-[2px] h-4 align-middle ${cursorOn ? 'bg-cyan-600' : 'bg-transparent'}`} />
           </div>
           <div className="mt-1 text-[11px] text-gray-500">Requester: Petlo Matabane</div>
         </div>
@@ -231,15 +231,15 @@ const Features: React.FC = () => {
         {/* Parsed chips */}
         {step >= 1 && (
           <div className="flex flex-wrap gap-2 text-[11px]">
-            <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-800 border border-purple-200">Dates: Fri → Mon (4 days)</span>
-            <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-800 border border-purple-200">Type: Study Leave</span>
-            <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-800 border border-purple-200">Reason: Examanination Period</span>
+            <span className="px-2 py-1 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200">Dates: Fri → Mon (4 days)</span>
+            <span className="px-2 py-1 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200">Type: Study Leave</span>
+            <span className="px-2 py-1 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200">Reason: Examanination Period</span>
           </div>
         )}
 
         {/* Manager approval card */}
         {step >= 2 && (
-          <div className="border border-purple-200 rounded-lg bg-white p-3 text-xs flex items-center justify-between">
+          <div className="border border-cyan-200 rounded-lg bg-white p-3 text-xs flex items-center justify-between">
             <div className="text-gray-800">
               <div className="font-semibold text-sm">Leave request • Petlo Matabane</div>
               <div>Monday 25 → Thursday 28 • 4 days</div>
@@ -257,16 +257,16 @@ const Features: React.FC = () => {
           <div className="flex items-center gap-2 text-xs">
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">Approved</span>
             {step >= 4 && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 text-purple-800 border border-purple-200">Synced to Google & Outlook</span>
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200">Synced to Google & Outlook</span>
             )}
           </div>
         )}
 
         {/* Calendar tile */}
         {step >= 4 && (
-          <div className="rounded-lg border border-purple-200 bg-purple-50 p-3">
+          <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3">
             <div className="text-[10px] text-gray-500 mb-1">Calendar</div>
-            <div className="h-16 bg-white border border-purple-200 rounded-md relative overflow-hidden">
+            <div className="h-16 bg-white border border-cyan-200 rounded-md relative overflow-hidden">
               <div className="absolute inset-y-2 left-4 right-4 rounded-md bg-amber-100 border border-amber-200 text-amber-900 text-xs flex items-center px-2">Out Of Office • Petlo Matabane (Fri–Mon)</div>
             </div>
           </div>
@@ -274,7 +274,7 @@ const Features: React.FC = () => {
 
         {/* Handover checklist */}
         {step >= 5 && (
-          <div className="border border-purple-200 rounded-lg bg-white p-3 text-xs">
+          <div className="border border-cyan-200 rounded-lg bg-white p-3 text-xs">
             <div className="font-semibold text-gray-900 mb-1">Handover checklist</div>
             <ul className="list-disc list-inside space-y-1 text-gray-800">
               <li className="flex items-center gap-2"><span className="inline-block w-2 h-2 rounded-full bg-emerald-500" /> Update status in Teams</li>
@@ -306,20 +306,20 @@ const Features: React.FC = () => {
       <div className="space-y-3">
         {/* Connected providers */}
         {(step >= 1) && (
-          <div className="flex items-center justify-between border border-purple-200 bg-white rounded-lg px-3 py-2 text-xs">
+          <div className="flex items-center justify-between border border-cyan-200 bg-white rounded-lg px-3 py-2 text-xs">
             <span className="text-gray-700">Connected: <span className="font-semibold">Google Calendar</span> • <span className="font-semibold">Outlook</span></span>
             <span className="inline-flex items-center gap-1 text-emerald-700"><Check className="w-3 h-3" /> Synced</span>
           </div>
         )}
 
         {/* Calendar grid mock */}
-        <div className="rounded-lg border border-purple-200 bg-purple-50 p-3">
+        <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3">
           <div className="grid grid-cols-4 gap-2 text-[10px] text-gray-500 mb-2">
             <span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span>
           </div>
-          <div className="relative h-20 bg-white rounded-md border border-purple-200 overflow-hidden">
+          <div className="relative h-20 bg-white rounded-md border border-cyan-200 overflow-hidden">
             {/* Existing event */}
-            <div className={`absolute top-2 left-4 right-24 h-6 rounded-md px-2 flex items-center text-xs ${step >= 2 ? 'bg-red-100 border border-red-200 text-red-800' : 'bg-purple-100 border border-purple-200 text-purple-800'}`}>
+            <div className={`absolute top-2 left-4 right-24 h-6 rounded-md px-2 flex items-center text-xs ${step >= 2 ? 'bg-red-100 border border-red-200 text-red-800' : 'bg-cyan-100 border border-cyan-200 text-cyan-800'}`}>
               Dev Meeting • 10:30–12:00
             </div>
             {/* New external event causing conflict */}
@@ -340,9 +340,9 @@ const Features: React.FC = () => {
 
         {/* Smart suggestion CTA */}
         {(step >= 2) && (
-          <div className="flex items-center justify-between text-xs border border-purple-200 bg-white rounded-lg px-3 py-2">
+          <div className="flex items-center justify-between text-xs border border-cyan-200 bg-white rounded-lg px-3 py-2">
             <span className="text-gray-700">Conflict detected. Find next available slot?</span>
-            <button className={`px-2 py-1 rounded-md border ${step >= 3 ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-purple-700 border-purple-300'}`}>
+            <button className={`px-2 py-1 rounded-md border ${step >= 3 ? 'bg-cyan-600 text-white border-cyan-600' : 'bg-white text-cyan-700 border-cyan-300'}`}>
               Find next slot
             </button>
           </div>
@@ -432,20 +432,20 @@ const Features: React.FC = () => {
       <div className="space-y-3">
         {/* New Idea share */}
         {step < 2 && (
-          <div className="border border-purple-200 bg-white rounded-lg p-3">
+          <div className="border border-cyan-200 bg-white rounded-lg p-3">
             <div className="text-sm font-semibold text-gray-900 mb-1">
               {typedTitle}
-              <span className={`ml-px inline-block w-[2px] h-4 align-middle ${cursorOn ? 'bg-purple-600' : 'bg-transparent'}`} />
+              <span className={`ml-px inline-block w-[2px] h-4 align-middle ${cursorOn ? 'bg-cyan-600' : 'bg-transparent'}`} />
             </div>
             <div className="text-xs text-gray-600">
               {typedDesc}
-              <span className={`ml-px inline-block w-[2px] h-3 align-middle ${cursorOn ? 'bg-purple-400' : 'bg-transparent'}`} />
+              <span className={`ml-px inline-block w-[2px] h-3 align-middle ${cursorOn ? 'bg-cyan-400' : 'bg-transparent'}`} />
             </div>
             {step >= 1 && (
               <div className="mt-2 flex items-center gap-2 text-[11px]">
-                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-semibold">+8</span>
-                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-semibold">Sounds good</span>
-                <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-semibold">Use template library</span>
+                <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 font-semibold">+8</span>
+                <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 font-semibold">Sounds good</span>
+                <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 font-semibold">Use template library</span>
               </div>
             )}
           </div>
@@ -453,7 +453,7 @@ const Features: React.FC = () => {
 
         {/* Blocker post */}
         {step >= 2 && (
-          <div className="border border-purple-200 bg-white rounded-lg p-3">
+          <div className="border border-cyan-200 bg-white rounded-lg p-3">
             <div className="text-sm font-semibold text-gray-900 mb-1">Blocker: OAuth callback failing in production</div>
             <div className="text-xs text-gray-600">Users get 302 loops after consent. Production only.</div>
           </div>
@@ -462,13 +462,13 @@ const Features: React.FC = () => {
         {/* Replies thread */}
         <div className="space-y-2">
           {step >= 3 && (
-            <div className="border border-purple-200 bg-purple-50 rounded-lg p-2 text-xs text-gray-800">
-              <span className="font-semibold text-purple-900">Monica:</span> Verify redirect URI matches exact scheme/host in the provider app settings.
+            <div className="border border-cyan-200 bg-cyan-50 rounded-lg p-2 text-xs text-gray-800">
+              <span className="font-semibold text-cyan-900">Monica:</span> Verify redirect URI matches exact scheme/host in the provider app settings.
             </div>
           )}
           {step >= 4 && (
-            <div className="border border-purple-200 bg-purple-50 rounded-lg p-2 text-xs text-gray-800">
-              <span className="font-semibold text-purple-900">Sam:</span> Log request host header behind the load balancer; could be HTTP→HTTPS mismatch.
+            <div className="border border-cyan-200 bg-cyan-50 rounded-lg p-2 text-xs text-gray-800">
+              <span className="font-semibold text-cyan-900">Sam:</span> Log request host header behind the load balancer; could be HTTP→HTTPS mismatch.
             </div>
           )}
         </div>
@@ -482,8 +482,8 @@ const Features: React.FC = () => {
 
         {/* AI Suggestions */}
         {step >= 6 && (
-          <div className="border border-purple-300 bg-purple-50 rounded-lg p-3 text-xs text-gray-800">
-            <div className="font-semibold text-purple-900 mb-1">Team Suggestions</div>
+          <div className="border border-cyan-300 bg-cyan-50 rounded-lg p-3 text-xs text-gray-800">
+            <div className="font-semibold text-cyan-900 mb-1">Team Suggestions</div>
             <ul className="list-disc list-inside space-y-1">
               <li>Add a health-check to validate callback URL in CI.</li>
               <li>Write a short postmortem and share in #dev.</li>
@@ -549,8 +549,8 @@ const Features: React.FC = () => {
       <div className="space-y-3">
         {/* Email card */}
         {(phase === 'email' || phase === 'toast') && (
-          <div className="border border-purple-200 rounded-lg p-3 bg-white shadow-sm flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white">
+          <div className="border border-cyan-200 rounded-lg p-3 bg-white shadow-sm flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-white">
               <Mail className="w-4 h-4" />
             </div>
             <div>
@@ -562,16 +562,16 @@ const Features: React.FC = () => {
 
         {/* In-app toast with progress */}
         {(phase === 'toast') && (
-          <div className="border border-purple-300 rounded-lg p-2 bg-purple-50 shadow-sm">
+          <div className="border border-cyan-300 rounded-lg p-2 bg-cyan-50 shadow-sm">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm text-purple-900">Task due soon</div>
+              <div className="text-sm text-cyan-900">Task due soon</div>
               <div className="flex gap-2 text-xs">
-                <button className="px-2 py-1 rounded-md bg-white border border-purple-300 text-purple-800">Open task</button>
-                <button className="px-2 py-1 rounded-md bg-white border border-purple-300 text-purple-800">Snooze 30m</button>
+                <button className="px-2 py-1 rounded-md bg-white border border-cyan-300 text-cyan-800">Open task</button>
+                <button className="px-2 py-1 rounded-md bg-white border border-cyan-300 text-cyan-800">Snooze 30m</button>
               </div>
             </div>
-            <div className="mt-2 h-1 bg-purple-200 rounded">
-              <div className="h-full bg-purple-600 rounded" style={{ width: `${toastProgress}%` }} />
+            <div className="mt-2 h-1 bg-cyan-200 rounded">
+              <div className="h-full bg-cyan-600 rounded" style={{ width: `${toastProgress}%` }} />
             </div>
           </div>
         )}
@@ -663,15 +663,15 @@ const Features: React.FC = () => {
     return (
       <div className="space-y-3">
         {/* Chat rows */}
-        <div className="rounded-lg border border-purple-200 bg-purple-50 p-3 space-y-2 text-sm">
+        <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-3 space-y-2 text-sm">
           {/* user typing */}
           <div className="flex items-start gap-2">
             <div className="w-6 h-6 rounded-full bg-slate-900" />
-            <div className="px-3 py-2 rounded-lg bg-white border border-purple-200 text-gray-800 min-h-[28px]">
+            <div className="px-3 py-2 rounded-lg bg-white border border-cyan-200 text-gray-800 min-h-[28px]">
               {phase === 'typingIn' || phase === 'typingBreak' || phase === 'typingOut' ? (
                 <>
                   {typed}
-                  <span className="inline-block w-[2px] h-4 align-middle bg-purple-600 ml-px" />
+                  <span className="inline-block w-[2px] h-4 align-middle bg-cyan-600 ml-px" />
                 </>
               ) : (
                 <span className="text-gray-400">Type a command…</span>
@@ -682,13 +682,13 @@ const Features: React.FC = () => {
           {/* confirmations */}
           {(phase !== 'typingIn') && (
             <div className="flex items-start gap-2">
-              <div className="w-6 h-6 rounded-full bg-purple-600" />
-              <div className="px-3 py-2 rounded-lg bg-purple-600/10 border border-purple-300 text-purple-800">
+              <div className="w-6 h-6 rounded-full bg-cyan-600" />
+              <div className="px-3 py-2 rounded-lg bg-cyan-600/10 border border-cyan-300 text-cyan-800">
                 {phase === 'confirmIn' && sequences[0].confirm}
                 {phase === 'typingBreak' && sequences[0].confirm}
                 {phase === 'confirmBreak' && (
                   <span className="inline-flex items-center gap-2">
-                    <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-purple-200 text-purple-800 font-semibold">Calendar • Recurring</span>
+                    <span className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-cyan-200 text-cyan-800 font-semibold">Calendar • Recurring</span>
                     {sequences[1].confirm}
                   </span>
                 )}
@@ -700,7 +700,7 @@ const Features: React.FC = () => {
 
           {phase === 'summary' && (
             <div className="flex items-start gap-2">
-              <div className="w-6 h-6 rounded-full bg-purple-600" />
+              <div className="w-6 h-6 rounded-full bg-cyan-600" />
               <div className="px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700">
                 Total: 7h 30m • Lunch Break: 60m • Synced to calendar
               </div>
@@ -709,15 +709,15 @@ const Features: React.FC = () => {
         </div>
 
         {/* Timeline */}
-        <div className="rounded-lg border border-purple-200 p-3">
+        <div className="rounded-lg border border-cyan-200 p-3">
           <div className="flex justify-between text-[10px] text-gray-500 mb-1">
             <span>{startLabel}</span>
             <span>{breakLabel}</span>
             <span>{endLabel}</span>
           </div>
-          <div className="h-2 w-full bg-purple-100 rounded-full overflow-hidden relative">
+          <div className="h-2 w-full bg-cyan-100 rounded-full overflow-hidden relative">
             {/* work progress */}
-            <div className="h-full bg-purple-400/70" style={{ width: `${Math.min(100, progress)}%` }} />
+            <div className="h-full bg-cyan-400/70" style={{ width: `${Math.min(100, progress)}%` }} />
             {/* break segment marker */}
             <div className="absolute left-1/2 top-0 h-full w-6 bg-amber-300/50 -translate-x-1/2 rounded-full" />
           </div>
@@ -750,31 +750,31 @@ const Features: React.FC = () => {
     }, [sample, cycle]);
 
     return (
-      <div className="relative rounded-xl border border-purple-200 overflow-hidden">
+      <div className="relative rounded-xl border border-cyan-200 overflow-hidden">
         <style>
           {`
             @keyframes pillWave { 0%{ transform: scaleY(.4)} 50%{ transform: scaleY(1)} 100%{ transform: scaleY(.4)} }
           `}
         </style>
-        <div className="p-4 bg-purple-50">
+        <div className="p-4 bg-cyan-50">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
               <User className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 flex items-end gap-1 h-6">
               {[...Array(14)].map((_, j) => (
-                <span key={j} className="w-1.5 bg-purple-400/80 rounded-sm origin-bottom" style={{ height: `${6 + (j%5)*4}px`, animation: `pillWave 1.6s ease-in-out ${j*0.06}s infinite` }} />
+                <span key={j} className="w-1.5 bg-cyan-400/80 rounded-sm origin-bottom" style={{ height: `${6 + (j%5)*4}px`, animation: `pillWave 1.6s ease-in-out ${j*0.06}s infinite` }} />
               ))}
             </div>
-            <span className="text-xs text-purple-700 font-medium">Speaking…</span>
+            <span className="text-xs text-cyan-700 font-medium">Speaking…</span>
           </div>
 
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="flex-1 rounded-lg bg-white border border-purple-200 px-3 py-2 shadow-sm">
-              <div className="text-gray-800 text-sm min-h-[20px]">{typed}<span className="inline-block w-[2px] h-4 align-middle bg-purple-600 ml-px" /></div>
+            <div className="flex-1 rounded-lg bg-white border border-cyan-200 px-3 py-2 shadow-sm">
+              <div className="text-gray-800 text-sm min-h-[20px]">{typed}<span className="inline-block w-[2px] h-4 align-middle bg-cyan-600 ml-px" /></div>
             </div>
           </div>
         </div>
@@ -807,10 +807,10 @@ const Features: React.FC = () => {
           {/* Avatars */}
           {[0,1,2].map(i => (
             <div key={i} className="col-span-1 bg-slate-800/60 border border-slate-700 rounded-lg p-3 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600" />
               <div className="flex-1 flex items-end gap-1 h-6">
                 {[...Array(8)].map((_, j) => (
-                  <span key={j} className="w-1.5 bg-purple-300 rounded-sm origin-bottom" style={{ height: `${6 + (j%4)*4}px`, animation: `waveUpDown 1.8s ease-in-out ${j*0.1}s infinite` }} />
+                  <span key={j} className="w-1.5 bg-cyan-300 rounded-sm origin-bottom" style={{ height: `${6 + (j%4)*4}px`, animation: `waveUpDown 1.8s ease-in-out ${j*0.1}s infinite` }} />
                 ))}
               </div>
             </div>
@@ -873,7 +873,7 @@ const Features: React.FC = () => {
               <div
                 key={b}
                 className={`relative rounded-lg px-3 py-2 border transition-all ${
-                  isDone ? 'bg-green-50 border-green-200' : 'bg-purple-100 border-purple-200'
+                  isDone ? 'bg-green-50 border-green-200' : 'bg-cyan-100 border-cyan-200'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -895,7 +895,7 @@ const Features: React.FC = () => {
                   <div className="absolute -right-4 -top-3">
                     <div className="relative">
                       <MousePointerClick className="w-5 h-5 text-slate-700 drop-shadow" />
-                      <span className="absolute -left-2 -top-2 inline-block w-6 h-6 rounded-full bg-purple-400/40 animate-ping" />
+                      <span className="absolute -left-2 -top-2 inline-block w-6 h-6 rounded-full bg-cyan-400/40 animate-ping" />
                     </div>
                   </div>
                 )}
@@ -918,8 +918,8 @@ const Features: React.FC = () => {
               onClick={() => setActive(id)}
               className={`px-5 py-2.5 rounded-xl border transition-all text-sm font-semibold shadow-sm ${
                 active === id
-                  ? 'bg-purple-600 text-white border-purple-600'
-                  : 'bg-white text-slate-700 border-purple-200 hover:border-purple-300'
+                  ? 'bg-[#0891b2] text-white border-[#0891b2]'
+                  : 'bg-white text-slate-700 border-cyan-200 hover:border-cyan-300'
               }`}
             >
               <span className="inline-flex items-center gap-2">
@@ -931,22 +931,22 @@ const Features: React.FC = () => {
         </div>
 
         {/* Panel */}
-        <div className="rounded-2xl bg-gradient-to-b from-purple-100 to-purple-200 text-gray-900 p-8 shadow-xl border border-purple-300">
+        <div className="rounded-2xl bg-gradient-to-b from-cyan-50 to-cyan-100 text-gray-900 p-8 shadow-xl border border-cyan-200">
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             {/* Left content */}
             <div className="space-y-6">
-              <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-purple-800 bg-purple-200 px-3 py-1 rounded-full">
+              <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full">
                 <ActiveIcon className="w-4 h-4" /> {tabs.find(t => t.id === active)?.label}
               </span>
               <h3 className="text-3xl sm:text-4xl font-bold leading-tight text-gray-900">{data.title}</h3>
               <p className="text-gray-700 text-lg max-w-xl">{data.description}</p>
-              <button className="inline-flex items-center gap-2 text-purple-700 hover:text-purple-800 font-semibold">
+              <button className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-semibold">
                 LEARN MORE <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
             {/* Right mock UI / Demo */}
-            <div className="bg-white rounded-xl p-4 border border-purple-200">
+            <div className="bg-white rounded-xl p-4 border border-cyan-200">
               {active === 'agenda' ? (
                 <AgendaDemo bullets={content.agenda.bullets} />
               ) : active === 'record' ? (
@@ -968,7 +968,7 @@ const Features: React.FC = () => {
               ) : (
                 <div className="space-y-3">
                   {data.bullets.map((b, i) => (
-                    <div key={i} className="flex items-center justify-between bg-purple-100 rounded-lg px-4 py-3 border border-purple-200">
+                    <div key={i} className="flex items-center justify-between bg-cyan-100 rounded-lg px-4 py-3 border border-cyan-200">
                       <span className="text-gray-800">{i + 1}. {b}</span>
                       <span className="text-gray-500 text-sm">{(i + 1) * 5} min</span>
                     </div>
