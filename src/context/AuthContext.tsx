@@ -1,54 +1,46 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
 
-// Define the structure of the authentication context
-interface AuthContextType {
-  user: any;
-  login: (userData: any) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
+interface User {
+  userId: string;
+  name: string;
+  email: string;
+  roleName: string;
+  status: string;
+  department: string;
 }
 
-// Create the context
+interface AuthContextType {
+  user: User | null;
+  login: (userData: User) => void; // login now accepts full user object
+  logout: () => void;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(
+    JSON.parse(localStorage.getItem("user") || "null")
+  );
 
-  // Check local storage for user data on page load
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  // Save user data to local storage on login
-  const login = (userData: any) => {
-    setUser(userData);
+  const login = (userData: User) => {
     localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
   };
 
-  // Clear user data on logout
   const logout = () => {
-    setUser(null);
     localStorage.removeItem("user");
+    setUser(null);
   };
-
-  const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// ✅ Exported custom hook for consuming the Auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };

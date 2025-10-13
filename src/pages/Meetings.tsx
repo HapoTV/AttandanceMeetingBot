@@ -27,7 +27,7 @@ const Meetings = () => {
   const [description, setDescription] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [duration, setDuration] = useState("");
-  const userId = "f47ac10b-58cc-4372-a567-0e02b2c3d479"; // logged-in user's ID
+  const userId = "81d9e0da-861a-4065-9cd2-c829b58c563d"; // logged-in user's ID
 
   const fetchMeetings = () => {
     axiosClient.get("/meetings").then((res) => setMeetings(res.data));

@@ -9,7 +9,7 @@ import axiosClient from "../api/axiosClient";
 
 interface Chat {
   chatId: string;
-  groupName?: string;
+  name?: string;
   participants: User[];
   lastMessage?: string;
   updatedAt?: string;
@@ -38,10 +38,11 @@ const Chat: React.FC = () => {
 
   const userId = localStorage.getItem("userId");
 
-  // 🔹 Fetch all chats
+  // 🔹 Fetch all chats for current user
   useEffect(() => {
+    if (!userId) return;
     axiosClient
-      .get("/chat")
+      .get(`/chat/user/${userId}`)
       .then((res) => {
         const sortedChats = res.data.sort(
           (a: Chat, b: Chat) =>
@@ -51,12 +52,12 @@ const Chat: React.FC = () => {
         setChats(sortedChats);
       })
       .catch((err) => console.error("Error fetching chats:", err));
-  }, []);
+  }, [userId]);
 
   // 🔹 Fetch messages of selected chat
   const fetchMessages = (chatId: string) => {
     axiosClient
-      .get(`/chat/messages/${chatId}`)
+      .get(`/chat/${chatId}/messages`)
       .then((res) => setMessages(res.data))
       .catch((err) => console.error("Error fetching messages:", err));
   };
@@ -68,15 +69,15 @@ const Chat: React.FC = () => {
 
   // 🔹 Send message
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedChat) return;
-    const payload = {
-      chatId: selectedChat.chatId,
+    if (!newMessage.trim() || !selectedChat || !userId) return;
+
+    const params = new URLSearchParams({
       senderId: userId,
-      message: newMessage.trim(),
-    };
+      content: newMessage.trim(),
+    });
 
     axiosClient
-      .post("/chat/send", payload)
+      .post(`/chat/${selectedChat.chatId}/message?${params.toString()}`)
       .then((res) => {
         setMessages((prev) => [...prev, res.data]);
         setNewMessage("");
@@ -106,8 +107,8 @@ const Chat: React.FC = () => {
               }`}
             >
               <h3 className="font-semibold">
-                {chat.groupName
-                  ? chat.groupName
+                {chat.name
+                  ? chat.name
                   : chat.participants
                       .filter((p) => p.userId !== userId)
                       .map((p) => p.fullName)
@@ -128,15 +129,14 @@ const Chat: React.FC = () => {
 
       {/* Right Side - Chat Window */}
       <div className="flex-1 flex flex-col bg-white">
-        {/* Top Navbar inside chat */}
         {selectedChat ? (
           <>
+            {/* Top Navbar */}
             <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-indigo-50">
-              {/* Left - Chat/User Info */}
               <div>
                 <h2 className="text-lg font-semibold">
-                  {selectedChat.groupName
-                    ? selectedChat.groupName
+                  {selectedChat.name
+                    ? selectedChat.name
                     : selectedChat.participants
                         .filter((p) => p.userId !== userId)
                         .map((p) => p.fullName)
@@ -149,7 +149,7 @@ const Chat: React.FC = () => {
                 </p>
               </div>
 
-              {/* Right - Call Dropdown */}
+              {/* Call Menu */}
               <div className="relative">
                 <button
                   onClick={() => setShowCallMenu(!showCallMenu)}
@@ -174,7 +174,7 @@ const Chat: React.FC = () => {
               </div>
             </div>
 
-            {/* Chat Messages */}
+            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
               {messages.map((msg) => (
                 <div

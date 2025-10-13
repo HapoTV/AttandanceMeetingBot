@@ -10,28 +10,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [,setShowCreatePassword] = useState(false);
+  const [, setShowCreatePassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const response = await axiosClient.post("/authentication/login", {
-        email,
-        password,
-      });
+  e.preventDefault();
+  setError("");
 
-      login({ email: response.data.email, userId: response.data.authenticationId });
-      navigate("/dashboard");
-    } catch (err: any) {
-      if (err.response?.data?.message === "Authentication not found") {
-        // User exists but no password yet
-        setShowCreatePassword(true);
-      } else {
-        setError("Invalid credentials");
-      }
-    }
-  };
+  try {
+    const response = await axiosClient.post("/authentication/login", { email, password });
+    const userData = response.data;
+
+    login(userData); // update context + localStorage
+    // Use setTimeout to wait for context update before navigating
+    setTimeout(() => navigate("/dashboard"), 50);
+  } catch (err: any) {
+    setError("Invalid credentials");
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-50">
@@ -95,15 +91,15 @@ const Login = () => {
         </form>
 
         {/* Create Password Link */}
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => navigate("/create-password", { state: { email } })}
-              className="text-sm text-indigo-600 font-medium hover:underline"
-            >
-              Create Password
-            </button>
-          </div>
-        
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => navigate("/create-password", { state: { email } })}
+            className="text-sm text-indigo-600 font-medium hover:underline"
+          >
+            Create Password
+          </button>
+        </div>
+
         {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
