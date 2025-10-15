@@ -6,9 +6,7 @@ import {
   VideoCameraSlashIcon,
   MicrophoneIcon,
   HandRaisedIcon,
- // ShareScreenIcon,
-  ChatBubbleLeftRightIcon,
-  ClipboardDocumentListIcon,
+  ComputerDesktopIcon,
   XMarkIcon,
   PaperClipIcon,
   FaceSmileIcon,
@@ -466,7 +464,7 @@ const MeetingCall: React.FC = () => {
               isScreenSharing ? "bg-blue-600 text-white" : "bg-gray-600 text-white"
             } hover:bg-opacity-80 transition`}
           >
-          {/*  <ShareScreenIcon className="w-6 h-6" /> */}
+          <ComputerDesktopIcon className="w-6 h-6" />
           </button>
 
           {/* Raise Hand */}

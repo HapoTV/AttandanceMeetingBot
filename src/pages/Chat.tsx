@@ -6,6 +6,7 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import axiosClient from "../api/axiosClient";
+import { useAuth } from "../context/AuthContext";
 
 interface ChatDTO {
   chatId: string;
@@ -29,8 +30,8 @@ const Chat: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const [userMap, setUserMap] = useState<Record<string, string>>({});
   const [showCallMenu, setShowCallMenu] = useState(false);
-
-  const userId = localStorage.getItem("userId");
+  const { user } = useAuth();
+  const userId = user?.userId || "";
 
   // 🔹 Method: Fetch all chats for current user
   const loadChats = async () => {
