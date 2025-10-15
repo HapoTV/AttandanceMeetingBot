@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ChatBubbleOvalLeftIcon,
   VideoCameraIcon,
@@ -7,20 +7,13 @@ import {
 } from "@heroicons/react/24/outline";
 import axiosClient from "../api/axiosClient";
 
-interface Chat {
+interface ChatDTO {
   chatId: string;
-  name?: string;
-  participants: User[];
-  lastMessage?: string;
-  updatedAt?: string;
+  name: string;
+  participantIds: string[];
 }
 
-interface User {
-  userId: string;
-  fullName: string;
-}
-
-interface Message {
+interface MessageDTO {
   messageId: string;
   chatId: string;
   senderId: string;
@@ -30,45 +23,67 @@ interface Message {
 }
 
 const Chat: React.FC = () => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [chats, setChats] = useState<ChatDTO[]>([]);
+  const [selectedChat, setSelectedChat] = useState<ChatDTO | null>(null);
+  const [messages, setMessages] = useState<MessageDTO[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [userMap, setUserMap] = useState<Record<string, string>>({});
   const [showCallMenu, setShowCallMenu] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
-  // 🔹 Fetch all chats for current user
-  useEffect(() => {
-    if (!userId) return;
-    axiosClient
-      .get(`/chat/user/${userId}`)
-      .then((res) => {
-        const sortedChats = res.data.sort(
-          (a: Chat, b: Chat) =>
-            new Date(b.updatedAt || "").getTime() -
-            new Date(a.updatedAt || "").getTime()
-        );
-        setChats(sortedChats);
-      })
-      .catch((err) => console.error("Error fetching chats:", err));
-  }, [userId]);
+  // 🔹 Method: Fetch all chats for current user
+  const loadChats = async () => {
+    if (!userId) {
+      console.error("⚠️ No userId found in localStorage.");
+      return;
+    }
 
-  // 🔹 Fetch messages of selected chat
-  const fetchMessages = (chatId: string) => {
-    axiosClient
-      .get(`/chat/${chatId}/messages`)
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.error("Error fetching messages:", err));
+    try {
+      const res = await axiosClient.get(`/chat/user/${userId}`);
+      console.log("📩 Chat list:", res.data);
+      const chats: ChatDTO[] = res.data;
+
+      // Fetch names for participants
+      const uniqueIds = Array.from(new Set(chats.flatMap((c) => c.participantIds)));
+      const userResponses = await Promise.all(
+        uniqueIds.map((id) =>
+          axiosClient
+            .get(`/users/${id}`)
+            .then((r) => ({ id, name: r.data.fullName }))
+            .catch(() => ({ id, name: "Unknown User" }))
+        )
+      );
+
+      const map: Record<string, string> = {};
+      userResponses.forEach((u) => (map[u.id] = u.name));
+      setUserMap(map);
+
+      setChats(chats);
+    } catch (err) {
+      console.error("❌ Error fetching chats:", err);
+    }
   };
 
-  const handleChatClick = (chat: Chat) => {
+  // 🔹 Method: Fetch messages for a chat
+  const fetchMessages = async (chatId: string) => {
+    try {
+      const res = await axiosClient.get(`/chat/${chatId}/messages`);
+      console.log("💬 Messages for chat:", res.data);
+      setMessages(res.data);
+    } catch (err) {
+      console.error("❌ Error fetching messages:", err);
+    }
+  };
+
+  // 🔹 Handle selecting a chat
+  const handleChatClick = (chat: ChatDTO) => {
     setSelectedChat(chat);
     fetchMessages(chat.chatId);
   };
 
-  // 🔹 Send message
-  const handleSendMessage = () => {
+  // 🔹 Send a message
+  const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedChat || !userId) return;
 
     const params = new URLSearchParams({
@@ -76,13 +91,16 @@ const Chat: React.FC = () => {
       content: newMessage.trim(),
     });
 
-    axiosClient
-      .post(`/chat/${selectedChat.chatId}/message?${params.toString()}`)
-      .then((res) => {
-        setMessages((prev) => [...prev, res.data]);
-        setNewMessage("");
-      })
-      .catch((err) => console.error("Error sending message:", err));
+    try {
+      const res = await axiosClient.post(
+        `/chat/${selectedChat.chatId}/message?${params.toString()}`
+      );
+      console.log("📨 Sent message:", res.data);
+      setMessages((prev) => [...prev, res.data]);
+      setNewMessage("");
+    } catch (err) {
+      console.error("❌ Error sending message:", err);
+    }
   };
 
   return (
@@ -94,36 +112,40 @@ const Chat: React.FC = () => {
             <ChatBubbleOvalLeftIcon className="w-6 h-6 text-indigo-600" />
             Chats
           </h2>
+
+          {/* Manual refresh button */}
+          <button
+            onClick={loadChats}
+            className="bg-indigo-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-indigo-700 transition"
+          >
+            Load Chats
+          </button>
         </div>
+
         <ul>
-          {chats.map((chat) => (
-            <li
-              key={chat.chatId}
-              onClick={() => handleChatClick(chat)}
-              className={`p-4 cursor-pointer hover:bg-indigo-50 ${
-                selectedChat?.chatId === chat.chatId
-                  ? "bg-indigo-100 border-l-4 border-indigo-600"
-                  : ""
-              }`}
-            >
-              <h3 className="font-semibold">
-                {chat.name
-                  ? chat.name
-                  : chat.participants
-                      .filter((p) => p.userId !== userId)
-                      .map((p) => p.fullName)
+          {chats.length === 0 ? (
+            <p className="p-4 text-gray-400 text-sm">No chats available</p>
+          ) : (
+            chats.map((chat) => (
+              <li
+                key={chat.chatId}
+                onClick={() => handleChatClick(chat)}
+                className={`p-4 cursor-pointer hover:bg-indigo-50 ${
+                  selectedChat?.chatId === chat.chatId
+                    ? "bg-indigo-100 border-l-4 border-indigo-600"
+                    : ""
+                }`}
+              >
+                <h3 className="font-semibold">
+                  {chat.name ||
+                    chat.participantIds
+                      .filter((id) => id !== userId)
+                      .map((id) => userMap[id] || id)
                       .join(", ")}
-              </h3>
-              <p className="text-sm text-gray-600 truncate">
-                {chat.lastMessage || "No messages yet"}
-              </p>
-              <p className="text-xs text-gray-400">
-                {chat.updatedAt
-                  ? new Date(chat.updatedAt).toLocaleString()
-                  : ""}
-              </p>
-            </li>
-          ))}
+                </h3>
+              </li>
+            ))
+          )}
         </ul>
       </div>
 
@@ -135,18 +157,12 @@ const Chat: React.FC = () => {
             <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-indigo-50">
               <div>
                 <h2 className="text-lg font-semibold">
-                  {selectedChat.name
-                    ? selectedChat.name
-                    : selectedChat.participants
-                        .filter((p) => p.userId !== userId)
-                        .map((p) => p.fullName)
-                        .join(", ")}
+                  {selectedChat.name ||
+                    selectedChat.participantIds
+                      .filter((id) => id !== userId)
+                      .map((id) => userMap[id] || id)
+                      .join(", ")}
                 </h2>
-                <p className="text-sm text-gray-600">
-                  {selectedChat.participants.length > 2
-                    ? `${selectedChat.participants.length} members`
-                    : "Direct Chat"}
-                </p>
               </div>
 
               {/* Call Menu */}
@@ -195,7 +211,7 @@ const Chat: React.FC = () => {
                     <p className="text-sm">{msg.content}</p>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
-                    {msg.senderName} •{" "}
+                    {msg.senderName || userMap[msg.senderId] || "Unknown"} •{" "}
                     {new Date(msg.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
