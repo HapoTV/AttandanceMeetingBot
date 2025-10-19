@@ -5,8 +5,6 @@ import {
   PencilSquareIcon, 
   TrashIcon,
   PlusIcon,
-  UserGroupIcon,
-  CalendarIcon,
   ChartBarIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
