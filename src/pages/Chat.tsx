@@ -20,7 +20,7 @@ interface MessageDTO {
   senderId: string;
   senderName: string;
   content: string;
-  timestamp: string;
+  createdAt: string;
 }
 
 const Chat: React.FC = () => {
@@ -213,7 +213,7 @@ const Chat: React.FC = () => {
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
                     {msg.senderName || userMap[msg.senderId] || "Unknown"} •{" "}
-                    {new Date(msg.timestamp).toLocaleTimeString([], {
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
