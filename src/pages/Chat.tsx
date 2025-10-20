@@ -83,26 +83,25 @@ const Chat: React.FC = () => {
     fetchMessages(chat.chatId);
   };
 
-  // 🔹 Send a message
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || !selectedChat || !userId) return;
+  // 🔹 Send a message - Updated to use JSON body
+const handleSendMessage = async () => {
+  if (!newMessage.trim() || !selectedChat || !userId) return;
 
-    const params = new URLSearchParams({
-      senderId: userId,
-      content: newMessage.trim(),
-    });
-
-    try {
-      const res = await axiosClient.post(
-        `/chat/${selectedChat.chatId}/message?${params.toString()}`
-      );
-      console.log("📨 Sent message:", res.data);
-      setMessages((prev) => [...prev, res.data]);
-      setNewMessage("");
-    } catch (err) {
-      console.error("❌ Error sending message:", err);
-    }
-  };
+  try {
+    const res = await axiosClient.post(
+      `/chat/${selectedChat.chatId}/message`,  // Remove query params
+      {
+        senderId: userId,
+        content: newMessage.trim()
+      }
+    );
+    console.log("📨 Sent message:", res.data);
+    setMessages((prev) => [...prev, res.data]);
+    setNewMessage("");
+  } catch (err) {
+    console.error("❌ Error sending message:", err);
+  }
+};
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-900">
