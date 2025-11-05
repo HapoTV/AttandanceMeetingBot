@@ -416,9 +416,6 @@ Developed by the Hapo Projects team.
 
 For support and questions:
 - **Email**: support@hapo.tv
-- **Documentation**: [Internal Wiki]
-- **Issue Tracker**: [GitHub Issues]
-
 ---
 
 ## 🗺️ Roadmap
