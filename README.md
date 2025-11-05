@@ -81,27 +81,15 @@
 ## 🏗️ Technology Stack
 
 ### Frontend
-- **React 18.3.1** - UI framework
-- **TypeScript 5.5.3** - Type-safe JavaScript
-- **Vite 5.4.2** - Build tool and dev server
-- **React Router DOM 7.9.3** - Client-side routing
-- **TailwindCSS 3.4.18** - Utility-first CSS framework
-
-### State Management & Data Fetching
-- **TanStack React Query 5.90.2** - Server state management
-- **React Context API** - Authentication and global state
-
-### UI Components & Icons
-- **Lucide React 0.344.0** - Modern icon library
-- **Heroicons React 2.2.0** - Additional icon set
-- **React Calendar 6.0.0** - Calendar component
+- **React** - UI framework
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Build tool and dev server
+- **React Router DOM** - Client-side routing
+- **TailwindCSS** - Utility-first CSS framework
 
 ### Backend Integration
-- **Axios 1.12.2** - HTTP client
-- **Supabase 2.57.4** - Backend as a Service (BaaS)
-
-### Utilities
-- **date-fns 4.1.0** - Date manipulation library
+- **Springboot**
+- **Supabase** 
 
 ---
 
