@@ -10,7 +10,7 @@ const CTA: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section id="pricing" className="py-16 bg-gray-50 scroll-mt-28">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">

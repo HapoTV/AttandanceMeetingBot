@@ -32,13 +32,13 @@ const About: React.FC = () => {
           <div className="space-y-8">
             <div>
               <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mb-4">
-                ABOUT HAPO AI
+                ABOUT AI LAB
               </p>
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-gray-900">
                 The Future of
                 <span className="block">Workplace Intelligence</span>
               </h2>
-              <div className="space-y-6 text-lg leading-relaxed text-gray-600">
+              <div className="space-y-5 text-base md:text-lg leading-relaxed text-gray-600">
                 <p>
                   Hapo AI revolutionizes how teams collaborate, manage time, and extract value 
                   from meetings. Our advanced AI doesn't just transcribe—it understands context, 
@@ -52,6 +52,24 @@ const About: React.FC = () => {
             </div>
 
             {/* Stats removed for now */}
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900">What you’ll achieve with AI Lab</h3>
+            <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-3">
+              <a href="#live-demo" className="rounded-2xl border border-gray-100 bg-gray-50 p-6 text-center shadow-sm hover:shadow-md hover:border-cyan-200 transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300" aria-label="Learn more about weekly time saved in the live demo">
+                <div className="text-3xl font-extrabold text-gray-900">8–12h</div>
+                <div className="mt-1 text-sm text-gray-600">Weekly time saved</div>
+                <div className="mt-2 text-xs text-gray-500">AI notes & summaries</div>
+              </a>
+              <a href="#live-demo" className="rounded-2xl border border-gray-100 bg-gray-50 p-6 text-center shadow-sm hover:shadow-md hover:border-cyan-200 transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300" aria-label="Learn more about improving attendance reliability in the live demo">
+                <div className="text-3xl font-extrabold text-gray-900">25–40%</div>
+                <div className="mt-1 text-sm text-gray-600">Improve attendance reliability</div>
+                <div className="mt-2 text-xs text-gray-500">Smart reminders & conflicts</div>
+              </a>
+              <a href="#live-demo" className="rounded-2xl border border-gray-100 bg-gray-50 p-6 text-center shadow-sm hover:shadow-md hover:border-cyan-200 transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300" aria-label="Learn more about faster follow-ups in the live demo">
+                <div className="text-3xl font-extrabold text-gray-900">3×</div>
+                <div className="mt-1 text-sm text-gray-600">Faster follow‑ups</div>
+                <div className="mt-2 text-xs text-gray-500">Instant tasks & templates</div>
+              </a>
+            </div>
           </div>
 
           <div className="space-y-6">

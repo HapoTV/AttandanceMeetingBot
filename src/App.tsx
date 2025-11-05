@@ -13,6 +13,8 @@ import Integrations from "./components/Integrations";
 import About from "./components/About";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
+import FAQ from "./components/FAQ";
+import LiveDemo from "./components/LiveDemo";
 
 // 🧭 Admin layout & pages
 import MainLayout from "./layout/MainLayout";
@@ -50,6 +52,8 @@ function App() {
                 <Features />
                 <Integrations />
                 <About />
+                <FAQ />
+                <LiveDemo />
                 <CTA />
                 <Footer />
               </div>
