@@ -1,13 +1,13 @@
-# Hapo AI - Meeting & Attendance Management Platform
+# AL LAB - Meeting & Attendance Bot Management Platform
 
-![Hapo AI](https://img.shields.io/badge/Hapo%20AI-Meeting%20Assistant-cyan)
+![AL Lab](https://img.shields.io/badge/Hapo%20AI-Meeting%20Assistant-cyan)
 ![React](https://img.shields.io/badge/React-18.3.1-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue)
 ![Vite](https://img.shields.io/badge/Vite-5.4.2-purple)
 
 ## 📋 Overview
 
-**Hapo AI** is an AI-powered meeting assistant and workplace management platform that transforms meetings into actionable insights. The application combines meeting recording, transcription, action item extraction with comprehensive leave management, time tracking, and AI-powered workplace automation.
+**Hapo AI Lab** is an AI-powered meeting assistant and workplace management platform that transforms meetings into actionable insights. The application combines meeting recording, transcription, action item extraction with comprehensive leave management, time tracking, and AI-powered workplace automation.
 
 ### Key Capabilities
 
@@ -210,20 +210,6 @@ Starts the Vite development server with hot module replacement (HMR).
 npm run build
 ```
 Builds the application for production. Output is in the `dist/` directory.
-
-### Lint
-```bash
-npm run lint
-```
-Runs ESLint to check for code quality issues.
-
-### Preview
-```bash
-npm run preview
-```
-Preview the production build locally.
-
----
 
 ## 🔐 Authentication
 
@@ -428,13 +414,13 @@ Contributions are welcome! Please follow these steps:
 
 ## 📝 License
 
-This project is proprietary software owned by **Hapo TV / Cape IT Initiative**.
+This project is proprietary software owned by **Hapo TV**.
 
 ---
 
 ## 👥 Team
 
-Developed by the Hapo Projects team at Cape IT Initiative.
+Developed by the Hapo Projects team.
 
 ---
 
