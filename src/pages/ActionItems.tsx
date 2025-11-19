@@ -8,16 +8,19 @@ import {
   ChartBarIcon
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
+import axiosClient from "../api/axiosClient"; // Import axios client for API calls
 
+// Interface matching the backend DTO structure
 interface Task {
   taskId: string;
   title: string;
   description: string;
-  assignee: string;
+  assignee: string; // Email of the assignee
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   status: "TODO" | "IN_PROGRESS" | "REVIEW" | "COMPLETED";
   dueDate: string;
-  progress: number;
+  progress: ProgressStage; // Progress stage from backend enum
+  progressPercentage: number; // Calculated percentage from progress stage
   timeline: {
     start: string;
     end: string;
@@ -27,11 +30,22 @@ interface Task {
   relevantFiles?: string[];
 }
 
+// Progress stage enum to match backend
+enum ProgressStage {
+  NOT_STARTED = "NOT_STARTED",
+  INFORMATION_GATHERING = "INFORMATION_GATHERING",
+  REQUIREMENTS_ANALYSIS = "REQUIREMENTS_ANALYSIS",
+  IMPLEMENTATION = "IMPLEMENTATION",
+  TESTING = "TESTING",
+  DEPLOYMENT = "DEPLOYMENT"
+}
+
 const ActionItems: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.userId || "";
   const role = user?.roleName || "";
 
+  // State management
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -40,69 +54,51 @@ const ActionItems: React.FC = () => {
   const [view, setView] = useState<"MAIN" | "GANTT" | "CARDS">("MAIN");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [priorityFilter, setPriorityFilter] = useState<string>("ALL");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Form state
+  // Form state - matches ActionDTO structure
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignee, setAssignee] = useState("");
   const [priority, setPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
   const [status, setStatus] = useState<"TODO" | "IN_PROGRESS" | "REVIEW" | "COMPLETED">("TODO");
   const [dueDate, setDueDate] = useState("");
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState<ProgressStage>(ProgressStage.NOT_STARTED);
   const [timelineStart, setTimelineStart] = useState("");
   const [timelineEnd, setTimelineEnd] = useState("");
   const [goalNotes, setGoalNotes] = useState("");
 
+  // Permission check - only ADMIN and MANAGER can modify tasks
   const canModify = role === "ADMIN" || role === "MANAGER";
 
-  // Mock data - replace with API calls
+  // Fetch all tasks from backend on component mount
   useEffect(() => {
-    const mockTasks: Task[] = [
-      {
-        taskId: "1",
-        title: "Implement User Authentication",
-        description: "Set up JWT-based authentication system",
-        assignee: "john.doe@company.com",
-        priority: "HIGH",
-        status: "IN_PROGRESS",
-        dueDate: "2024-03-15",
-        progress: 65,
-        timeline: { start: "2024-02-01", end: "2024-03-15" },
-        owner: "Project Manager",
-        goalNotes: "Critical for security compliance",
-        relevantFiles: ["auth-spec.pdf", "security-requirements.docx"]
-      },
-      {
-        taskId: "2",
-        title: "Design Dashboard UI",
-        description: "Create responsive dashboard components",
-        assignee: "jane.smith@company.com",
-        priority: "MEDIUM",
-        status: "TODO",
-        dueDate: "2024-03-20",
-        progress: 0,
-        timeline: { start: "2024-03-01", end: "2024-03-20" },
-        owner: "UI/UX Lead",
-        goalNotes: "Follow design system guidelines"
-      },
-      {
-        taskId: "3",
-        title: "Database Optimization",
-        description: "Optimize queries and add indexing",
-        assignee: "mike.wilson@company.com",
-        priority: "HIGH",
-        status: "REVIEW",
-        dueDate: "2024-03-10",
-        progress: 90,
-        timeline: { start: "2024-02-15", end: "2024-03-10" },
-        owner: "Tech Lead",
-        goalNotes: "Improve application performance by 40%"
-      }
-    ];
-    setTasks(mockTasks);
-    setFilteredTasks(mockTasks);
+    fetchTasks();
   }, []);
 
+  /**
+   * Fetches all tasks from the backend API
+   */
+  const fetchTasks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosClient.get("/actions");
+      setTasks(response.data);
+      setFilteredTasks(response.data);
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+      setError("Failed to load tasks. Please try again.");
+      // Fallback to empty array if API fails
+      setTasks([]);
+      setFilteredTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter tasks based on search term and filters
   useEffect(() => {
     let filtered = tasks.filter(task =>
       task.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -110,10 +106,12 @@ const ActionItems: React.FC = () => {
       task.assignee.toLowerCase().includes(search.toLowerCase())
     );
 
+    // Apply status filter
     if (statusFilter !== "ALL") {
       filtered = filtered.filter(task => task.status === statusFilter);
     }
 
+    // Apply priority filter
     if (priorityFilter !== "ALL") {
       filtered = filtered.filter(task => task.priority === priorityFilter);
     }
@@ -121,34 +119,166 @@ const ActionItems: React.FC = () => {
     setFilteredTasks(filtered);
   }, [search, statusFilter, priorityFilter, tasks]);
 
+  /**
+   * Creates a new task by calling the backend API
+   */
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newTask: Task = {
-      taskId: Date.now().toString(),
-      title,
-      description,
-      assignee,
-      priority,
-      status,
-      dueDate,
-      progress,
-      timeline: {
-        start: timelineStart,
-        end: timelineEnd
-      },
-      owner: user?.name || "Manager",
-      goalNotes
-    };
+    setError(null);
+    
+    try {
+      // Prepare task data matching ActionDTO structure
+      const taskData = {
+        title,
+        description,
+        assignee, // Email of the assignee
+        priority,
+        status,
+        dueDate,
+        progress,
+        timeline: {
+          start: timelineStart,
+          end: timelineEnd
+        },
+        owner: user?.name || "Manager",
+        goalNotes
+      };
 
-    setTasks(prev => [...prev, newTask]);
-    setShowForm(false);
-    resetForm();
+      // API call to create task
+      const response = await axiosClient.post("/actions", taskData);
+      
+      // Add new task to local state
+      setTasks(prev => [...prev, response.data]);
+      setShowForm(false);
+      resetForm();
+    } catch (err) {
+      console.error("Error creating task:", err);
+      setError("Failed to create task. Please check the assignee email and try again.");
+    }
   };
 
-  const handleDelete = (taskId: string) => {
-    setTasks(prev => prev.filter(task => task.taskId !== taskId));
+  /**
+   * Updates an existing task via backend API
+   */
+  const handleUpdate = async (taskId: string, updatedTask: Partial<Task>) => {
+    setError(null);
+    try {
+      const response = await axiosClient.put(`/actions/${taskId}`, updatedTask);
+      
+      // Update task in local state
+      setTasks(prev => prev.map(task => 
+        task.taskId === taskId ? response.data : task
+      ));
+    } catch (err) {
+      console.error("Error updating task:", err);
+      setError("Failed to update task. Please try again.");
+    }
   };
 
+  /**
+   * Deletes a task via backend API
+   */
+  const handleDelete = async (taskId: string) => {
+    setError(null);
+    try {
+      await axiosClient.delete(`/actions/${taskId}`);
+      
+      // Remove task from local state
+      setTasks(prev => prev.filter(task => task.taskId !== taskId));
+    } catch (err) {
+      console.error("Error deleting task:", err);
+      setError("Failed to delete task. Please try again.");
+    }
+  };
+
+  /**
+   * Updates task progress stage via backend API
+   */
+  const handleProgressUpdate = async (taskId: string, progressStage: ProgressStage) => {
+    setError(null);
+    try {
+      const response = await axiosClient.patch(`/actions/${taskId}/progress?progress=${progressStage}`);
+      
+      // Update task in local state
+      setTasks(prev => prev.map(task => 
+        task.taskId === taskId ? response.data : task
+      ));
+    } catch (err) {
+      console.error("Error updating task progress:", err);
+      setError("Failed to update task progress. Please try again.");
+    }
+  };
+
+  /**
+   * Fetches tasks by assignee email from backend
+   */
+  const fetchTasksByAssignee = async (email: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosClient.get(`/actions/assignee/${email}`);
+      setFilteredTasks(response.data);
+    } catch (err) {
+      console.error("Error fetching tasks by assignee:", err);
+      setError("Failed to load tasks for this assignee.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Searches tasks via backend API
+   */
+  const handleSearch = async (searchTerm: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosClient.get(`/actions/search?q=${encodeURIComponent(searchTerm)}`);
+      setFilteredTasks(response.data);
+    } catch (err) {
+      console.error("Error searching tasks:", err);
+      setError("Search failed. Please try again.");
+      // Fallback to client-side search
+      const filtered = tasks.filter(task =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        task.assignee.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredTasks(filtered);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Applies filters via backend API
+   */
+  const handleFilter = async (status: string, priority: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosClient.get(`/actions/filter?status=${status}&priority=${priority}`);
+      setFilteredTasks(response.data);
+    } catch (err) {
+      console.error("Error filtering tasks:", err);
+      setError("Filter failed. Please try again.");
+      // Fallback to client-side filtering
+      let filtered = tasks;
+      if (status !== "ALL") {
+        filtered = filtered.filter(task => task.status === status);
+      }
+      if (priority !== "ALL") {
+        filtered = filtered.filter(task => task.priority === priority);
+      }
+      setFilteredTasks(filtered);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Resets form fields to initial state
+   */
   const resetForm = () => {
     setTitle("");
     setDescription("");
@@ -156,12 +286,15 @@ const ActionItems: React.FC = () => {
     setPriority("MEDIUM");
     setStatus("TODO");
     setDueDate("");
-    setProgress(0);
+    setProgress(ProgressStage.NOT_STARTED);
     setTimelineStart("");
     setTimelineEnd("");
     setGoalNotes("");
   };
 
+  /**
+   * Gets CSS classes for priority badge colors
+   */
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "URGENT": return "bg-red-100 text-red-800";
@@ -172,6 +305,9 @@ const ActionItems: React.FC = () => {
     }
   };
 
+  /**
+   * Gets CSS classes for status badge colors
+   */
   const getStatusColor = (status: string) => {
     switch (status) {
       case "COMPLETED": return "bg-green-100 text-green-800";
@@ -182,8 +318,14 @@ const ActionItems: React.FC = () => {
     }
   };
 
+  /**
+   * Renders the main table view of tasks
+   */
   const renderMainTableView = () => (
     <div className="bg-white rounded-lg shadow overflow-hidden">
+      {loading && (
+        <div className="p-4 text-center text-gray-500">Loading tasks...</div>
+      )}
       <table className="w-full">
         <thead className="bg-gray-50">
           <tr>
@@ -199,7 +341,11 @@ const ActionItems: React.FC = () => {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {filteredTasks.map((task) => (
-            <tr key={task.taskId} className="hover:bg-gray-50">
+            <tr 
+              key={task.taskId} 
+              className="hover:bg-gray-50 cursor-pointer"
+              onClick={() => setSelectedTask(task)}
+            >
               <td className="px-4 py-3">
                 <div>
                   <h3 className="font-semibold text-gray-900">{task.title}</h3>
@@ -226,10 +372,10 @@ const ActionItems: React.FC = () => {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div 
                     className="bg-blue-600 h-2 rounded-full" 
-                    style={{ width: `${task.progress}%` }}
+                    style={{ width: `${task.progressPercentage}%` }}
                   ></div>
                 </div>
-                <span className="text-xs text-gray-500">{task.progress}%</span>
+                <span className="text-xs text-gray-500">{task.progressPercentage}% - {task.progress}</span>
               </td>
               <td className="px-4 py-3 text-sm text-gray-500">
                 {new Date(task.dueDate).toLocaleDateString()}
@@ -237,9 +383,31 @@ const ActionItems: React.FC = () => {
               {canModify && (
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <PencilSquareIcon className="w-4 h-4 text-indigo-500 cursor-pointer" />
+                    {/* Progress update dropdown */}
+                    <select
+                      value={task.progress}
+                      onChange={(e) => handleProgressUpdate(task.taskId, e.target.value as ProgressStage)}
+                      className="text-xs border rounded p-1"
+                      onClick={(e) => e.stopPropagation()} // Prevent row click
+                    >
+                      {Object.values(ProgressStage).map(stage => (
+                        <option key={stage} value={stage}>
+                          {stage.replace('_', ' ')}
+                        </option>
+                      ))}
+                    </select>
+                    <PencilSquareIcon 
+                      className="w-4 h-4 text-indigo-500 cursor-pointer hover:text-indigo-700" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // TODO: Implement edit functionality
+                      }}
+                    />
                     <TrashIcon 
-                      onClick={() => handleDelete(task.taskId)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(task.taskId);
+                      }}
                       className="w-4 h-4 text-red-500 cursor-pointer hover:text-red-700"
                     />
                   </div>
@@ -249,13 +417,25 @@ const ActionItems: React.FC = () => {
           ))}
         </tbody>
       </table>
+      {filteredTasks.length === 0 && !loading && (
+        <div className="p-8 text-center text-gray-500">
+          No tasks found. {search ? "Try a different search term." : "Create your first task!"}
+        </div>
+      )}
     </div>
   );
 
+  /**
+   * Renders the card view of tasks
+   */
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredTasks.map((task) => (
-        <div key={task.taskId} className="bg-white rounded-lg shadow p-4 border">
+        <div 
+          key={task.taskId} 
+          className="bg-white rounded-lg shadow p-4 border hover:shadow-md transition cursor-pointer"
+          onClick={() => setSelectedTask(task)}
+        >
           <div className="flex justify-between items-start mb-3">
             <h3 className="font-semibold text-lg">{task.title}</h3>
             <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(task.priority)}`}>
@@ -281,21 +461,42 @@ const ActionItems: React.FC = () => {
             <div className="pt-2">
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-gray-500">Progress</span>
-                <span>{task.progress}%</span>
+                <span>{task.progressPercentage}% - {task.progress.replace('_', ' ')}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   className="bg-blue-600 h-2 rounded-full" 
-                  style={{ width: `${task.progress}%` }}
+                  style={{ width: `${task.progressPercentage}%` }}
                 ></div>
               </div>
             </div>
           </div>
           {canModify && (
             <div className="flex justify-end gap-2 mt-4 pt-3 border-t">
-              <PencilSquareIcon className="w-4 h-4 text-indigo-500 cursor-pointer" />
+              <select
+                value={task.progress}
+                onChange={(e) => handleProgressUpdate(task.taskId, e.target.value as ProgressStage)}
+                className="text-xs border rounded p-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {Object.values(ProgressStage).map(stage => (
+                  <option key={stage} value={stage}>
+                    {stage.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+              <PencilSquareIcon 
+                className="w-4 h-4 text-indigo-500 cursor-pointer hover:text-indigo-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Implement edit functionality
+                }}
+              />
               <TrashIcon 
-                onClick={() => handleDelete(task.taskId)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(task.taskId);
+                }}
                 className="w-4 h-4 text-red-500 cursor-pointer hover:text-red-700"
               />
             </div>
@@ -305,6 +506,9 @@ const ActionItems: React.FC = () => {
     </div>
   );
 
+  /**
+   * Renders the Gantt chart view (placeholder for Frappe Gantt integration)
+   */
   const renderGanttView = () => (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="text-center text-gray-500">
@@ -322,6 +526,19 @@ const ActionItems: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Error Display */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button 
+            onClick={() => setError(null)}
+            className="float-right font-bold"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -374,11 +591,19 @@ const ActionItems: React.FC = () => {
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch(search);
+              }
+            }}
             className="flex-1 p-2 border rounded-lg focus:ring focus:ring-indigo-200"
           />
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              handleFilter(e.target.value, priorityFilter);
+            }}
             className="p-2 border rounded-lg"
           >
             <option value="ALL">All Status</option>
@@ -389,7 +614,10 @@ const ActionItems: React.FC = () => {
           </select>
           <select
             value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
+            onChange={(e) => {
+              setPriorityFilter(e.target.value);
+              handleFilter(statusFilter, e.target.value);
+            }}
             className="p-2 border rounded-lg"
           >
             <option value="ALL">All Priority</option>
@@ -398,10 +626,19 @@ const ActionItems: React.FC = () => {
             <option value="HIGH">High</option>
             <option value="URGENT">Urgent</option>
           </select>
+          <button
+            onClick={() => fetchTasks()} // Refresh button
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+          >
+            Refresh
+          </button>
         </div>
       </div>
 
       {/* Content View */}
+      {loading && view !== "MAIN" && (
+        <div className="text-center p-4 text-gray-500">Loading tasks...</div>
+      )}
       {view === "MAIN" && renderMainTableView()}
       {view === "CARDS" && renderCardsView()}
       {view === "GANTT" && renderGanttView()}
@@ -432,7 +669,9 @@ const ActionItems: React.FC = () => {
                 </span>
               </p>
               <p><strong>Due Date:</strong> {new Date(selectedTask.dueDate).toLocaleDateString()}</p>
-              <p><strong>Progress:</strong> {selectedTask.progress}%</p>
+              <p><strong>Progress:</strong> {selectedTask.progressPercentage}% - {selectedTask.progress.replace('_', ' ')}</p>
+              <p><strong>Timeline:</strong> {new Date(selectedTask.timeline.start).toLocaleDateString()} to {new Date(selectedTask.timeline.end).toLocaleDateString()}</p>
+              <p><strong>Owner:</strong> {selectedTask.owner}</p>
               {selectedTask.goalNotes && <p><strong>Goal Notes:</strong> {selectedTask.goalNotes}</p>}
             </div>
           </div>
@@ -455,7 +694,7 @@ const ActionItems: React.FC = () => {
             <form onSubmit={handleCreate} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                   <input
                     type="text"
                     placeholder="Task title"
@@ -466,9 +705,9 @@ const ActionItems: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Assignee Email *</label>
                   <input
-                    type="text"
+                    type="email"
                     placeholder="Assignee email"
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
@@ -479,7 +718,7 @@ const ActionItems: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
                 <textarea
                   placeholder="Task description"
                   value={description}
@@ -492,11 +731,12 @@ const ActionItems: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Priority *</label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as any)}
                     className="w-full border rounded-lg p-2"
+                    required
                   >
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
@@ -505,11 +745,12 @@ const ActionItems: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status *</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as any)}
                     className="w-full border rounded-lg p-2"
+                    required
                   >
                     <option value="TODO">To Do</option>
                     <option value="IN_PROGRESS">In Progress</option>
@@ -518,18 +759,21 @@ const ActionItems: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Progress</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Progress Stage</label>
+                  <select
                     value={progress}
-                    onChange={(e) => setProgress(parseInt(e.target.value))}
+                    onChange={(e) => setProgress(e.target.value as ProgressStage)}
                     className="w-full border rounded-lg p-2"
-                  />
+                  >
+                    {Object.values(ProgressStage).map(stage => (
+                      <option key={stage} value={stage}>
+                        {stage.replace('_', ' ')}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
                   <input
                     type="date"
                     value={dueDate}
@@ -542,7 +786,7 @@ const ActionItems: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Timeline Start</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Timeline Start *</label>
                   <input
                     type="date"
                     value={timelineStart}
@@ -552,7 +796,7 @@ const ActionItems: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Timeline End</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Timeline End *</label>
                   <input
                     type="date"
                     value={timelineEnd}
