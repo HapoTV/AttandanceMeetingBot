@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
-import { ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 interface Reminder {
   reminderId: string;
@@ -23,11 +23,27 @@ const Reminders: React.FC = () => {
     r.message.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleAddReminder = () => {
+    // Implement your add reminder logic here
+    console.log("Add Reminder clicked");
+    // You can open a modal, navigate to a form, or show a dialog for creating new reminders
+  };
+
   return (
     <div className="p-6 relative">
-      <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
-        <ClockIcon className="w-7 h-7 text-indigo-600" /> Reminders
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <ClockIcon className="w-7 h-7 text-indigo-600" /> Reminders
+        </h2>
+        
+        <button
+          onClick={handleAddReminder}
+          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+        >
+          <PlusIcon className="w-5 h-5" />
+          Add Reminder
+        </button>
+      </div>
 
       <input
         type="text"

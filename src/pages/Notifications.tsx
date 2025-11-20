@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BellIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { BellIcon, XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
 import axiosClient from "../api/axiosClient";
 
 interface Notification {
@@ -27,11 +27,27 @@ const Notifications: React.FC = () => {
       n.notificationType.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleAddNotification = () => {
+    // Implement your add notification logic here
+    console.log("Add Notification clicked");
+    // You can open a modal, navigate to a form, or show a dialog
+  };
+
   return (
     <div className="p-6 relative">
-      <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
-        <BellIcon className="w-7 h-7 text-yellow-500" /> Notifications
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <BellIcon className="w-7 h-7 text-yellow-500" /> Notifications
+        </h2>
+        
+        <button
+          onClick={handleAddNotification}
+          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
+        >
+          <PlusIcon className="w-5 h-5" />
+          Add Notification
+        </button>
+      </div>
 
       <input
         type="text"
